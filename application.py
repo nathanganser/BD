@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, render_template
 import os
 from flask_sqlalchemy import SQLAlchemy
-from waitress import serve
 from dotenv import load_dotenv
 from models import *
 
