@@ -1,4 +1,6 @@
-from flask import Flask, jsonify, render_template
+import datetime
+
+from flask import Flask, jsonify, render_template, request, redirect
 import os
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -7,7 +9,7 @@ from models import *
 load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
@@ -20,7 +22,7 @@ class Error(Exception):
 # URLs
 @app.route('/')
 def index():
-  return render_template("index.html")
+    return render_template("index.html")
 
 
 @app.route('/constructeurs')
@@ -32,6 +34,7 @@ def get_constructeur():
     json = {"title": "Constructeurs", "description": "Voici les différents constructeurs de vaisseaux.", "array": data}
     return render_template("list.html", data=json)
 
+
 @app.route('/bombardiers')
 def get_bombardiers():
     bombardiers = Bombardier.query.all()
@@ -41,6 +44,7 @@ def get_bombardiers():
     json = {"title": "Bombardiers", "description": "Voici les différentes classes de bombardiers", "array": data}
     return render_template("list.html", data=json)
 
+
 @app.route('/planetes')
 def get_planetes():
     planetes = Planete.query.all()
@@ -49,6 +53,7 @@ def get_planetes():
         data.append({"nom": planete.nom, "id": "/planete/" + str(planete.id)})
     json = {"title": "Planetes", "description": "Voici les différentes planètes", "array": data}
     return render_template("list.html", data=json)
+
 
 @app.route('/planete/<id>')
 def get_planete(id):
@@ -60,13 +65,37 @@ def get_planete(id):
     return render_template("info.html", data=json)
 
 
+@app.route('/suggestions', methods=['GET', 'POST'])
+def suggestions():
+    if request.method == 'GET':
+        suggestions = Suggestions.query.filter_by(pris_en_compte=0).all()
+        array = []
+        for sug in suggestions:
+            array.append({"nom": sug.suggestion, "id": "/suggestion/"+str(sug.id)})
+        data = {"title": "Suggestions", "description": "Suggestions à prendre en compte", "array": array}
+        return render_template('list.html', data=data)
+    elif request.method == 'POST':
+        suggestion = request.form.get('Suggestion')
+        email = request.form.get('Email')
+        print(suggestion)
+        sug = Suggestions(suggestion=suggestion, email=email, date=datetime.datetime.now(), pris_en_compte=0)
+        sug.insert()
+        return redirect('/suggestions')
+
+@app.route('/suggestion/<id>')
+def suggestion(id):
+    suggestion = Suggestions.query.filter_by(id=id).first()
+    information = {"Email": suggestion.email, "Date": suggestion.date, "Pris en compte?": suggestion.pris_en_compte}
+    json = {"title": suggestion.suggestion, "information": information}
+    return render_template('info.html', data=json)
+
 @app.errorhandler(Error)
 def error(error):
     return jsonify({
         "success": False,
         'error': error.status_code,
         "message": error.error,
-        }), error.status_code
+    }), error.status_code
 
 
 if __name__ == '__main__':

@@ -79,3 +79,20 @@ class Region(db.Model):
     __tablename__ = "region"
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String)
+
+
+class Suggestions(db.Model):
+    __tablename__ = "suggestions"
+    id = db.Column(db.Integer, primary_key=True)
+    suggestion = db.Column(db.String)
+    email = db.Column(db.String)
+    pris_en_compte = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+
+    def insert(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(f'Error {e} - while trying to commit to database')
+            db.session.rollback()

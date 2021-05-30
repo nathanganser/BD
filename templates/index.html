@@ -2,15 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Welcome!</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
+<body style="padding: 30px">
 <h1>Projet BD Star wars</h1>
 <ul>
     <li><a href="/planetes">Planetes</a></li>
-  <li><a href="/bombardiers">Bombardiers</a></li>
-  <li><a href="/constructeurs">Constructeurs</a></li>
-  
+    <li><a href="/bombardiers">Bombardiers</a></li>
+    <li><a href="/constructeurs">Constructeurs</a></li>
+
 </ul>
+<i>Les autres tables seront rajoutées prochainement...</i>
+
+<form action="/suggestions" method="POST" style="border-style: dotted">
+    <div >
+        <p>Suggestion <input type="text" name="Suggestion"/></p>
+        <p>Email <input type="text" name="Email"/></p>
+        <p><input style="background-color: lavenderblush" type="submit" value="submit"/>
+    </div>
+</form>
+
+<span></span>
+<i>Administrateur: <a href="/suggestions">Voir les suggestions des utilisateurs</a></i>
 </body>
 </html>
